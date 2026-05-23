@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "test:debug": "PWDEBUG=1 playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\""
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
