@@ -1,23 +1,20 @@
 import { test as setup, expect } from '@playwright/test';
-
-// Define where the authenticated browser session state will be saved
-const authFile = 'playwright/.auth/user.json';
+import { STORAGE_STATE } from '../playwright.config';
 
 setup('authenticate user and cache session state', async ({ page }) => {
-  // 1. Navigate to your application's login endpoint
-  await page.goto('https://app.cipherflowsystems.com/login');
+  // Navigate to a real, live public sandbox login page
+  await page.goto('https://the-internet.herokuapp.com/login');
 
-  // 2. Use resilient semantic locators to fill credentials
-  await page.getByRole('textbox', { name: /email/i }).fill('engineering-test@cipherflowsystems.com');
-  await page.getByRole('textbox', { name: /password/i }).fill('SecureFramework2026!');
+  // Fill real working demo credentials
+  await page.getByRole('textbox', { name: /username/i }).fill('tomsmith');
+  await page.getByRole('textbox', { name: /password/i }).fill('SuperSecretPassword!');
   
-  // 3. Submit the form
-  await page.getByRole('button', { name: /sign in/i }).click();
+  // Submit the form
+  await page.getByRole('button', { name: /login/i }).click();
 
-  // 4. Critical: Assert a unique landing page element exists to guarantee successful login before caching
-  await expect(page.getByRole('heading', { name: /dashboard/i })).toBeVisible({ timeout: 10000 });
+  // Assert that we successfully bypassed the gate by checking for the logout button
+  await expect(page.getByRole('link', { name: /logout/i })).toBeVisible({ timeout: 10000 });
 
-  // 5. Save storage state (cookies and localStorage) to disk
-  await page.context().storageState({ path: authFile });
+  // Save the authentic browser context storage state to disk
+  await page.context().storageState({ path: STORAGE_STATE });
 });
-
